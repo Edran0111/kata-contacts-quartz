@@ -37,13 +37,30 @@ class Contacts:
 
 
 def insert_many_contacts(num_contacts):
-    print("Inserting {num_contacts} contacts ...")
-    # TODO - at the end of the call,
-    # the database should contain `num_contacts` contacts,
-    # from `email-1@domain.tod` to `email-{num_contacts}@domain.tld`,
-    # in this order
-    print("Done")
+    try:
+    
+            
+        print(f"Inserting {num_contacts} contacts ...")
+        # TODO - at the end of the call,
+        # the database should contain `num_contacts` contacts,
+        # from `email-1@domain.tod` to `email-{num_contacts}@domain.tld`,
+        # in this orde
+        
+        connection = sqlite3.connect("contacts.sqlite3")
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM contacts")
+        contacts = [(f"contact-{i}", f"email-{i}@domain.tld") for i in range(1, num_contacts + 1)]
+        cursor.executemany(
+            "INSERT INTO contacts (name, email) VALUES (?, ?)",
+            contacts
+        )
+        print("Done")
+        connection.commit()
+        connection.close()
 
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
 def main():
     if len(sys.argv) < 2:
